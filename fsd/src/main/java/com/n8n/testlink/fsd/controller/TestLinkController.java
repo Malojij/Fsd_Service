@@ -1,5 +1,7 @@
 package com.n8n.testlink.fsd.controller;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -35,7 +37,7 @@ public class TestLinkController {
 
 	@PostMapping(value = "/upload", consumes = "application/json")
 	
-	public ResponseEntity<Map<String, String>> uploadTestCases(@RequestBody Map<String, String> request) {
+	public ResponseEntity<Map<String, Object>> uploadTestCases(@RequestBody Map<String, String> request) {
 		
 		String projectName = request.get("projectName");
 		String testSuiteName = request.get("testSuiteName");
@@ -43,6 +45,11 @@ public class TestLinkController {
 		
 		System.out.println("\n\n\n");
 		log.info("============================📥 Request received============================");
+		
+		LocalDateTime timeNow = LocalDateTime.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+		String timestamp = timeNow.format(formatter);
+		log.info("Request received at:"  + timestamp );
 		
 		log.info("PROJECT: {}",  projectName);
 		log.info("SUITE: {}",  testSuiteName);
@@ -60,7 +67,7 @@ public class TestLinkController {
 		
 		long start = System.currentTimeMillis();
 		
-		String result = testLinkService.uploadTestCasesFromXMLString(userName, devKey, projectName, "MJTEST", testSuiteName, xmlContent);
+		Map<String, Object> result = testLinkService.uploadTestCasesFromXMLString(userName, devKey, projectName, "MJTEST", testSuiteName, xmlContent);
 		
 		long duration = System.currentTimeMillis() - start;
 	
